@@ -64,7 +64,6 @@ question: |
 subquestion: |
   Important: This payment must be made online, no EFTs direct into our bank account will be accepted.
   
-add payment functionality
   <button class="btn btn-da btn-primary" id="checkout-button">Pay</button> 
 
 script: |
@@ -88,14 +87,15 @@ script: |
             $("#payment_message").html("We are processing your payment, please do not close this page.");
             document.getElementById('checkout-button').style.visibility = 'hidden'
             const token = result;
-            action_call('get_token', {token_id: token.id});
-            alert("card successfully tokenised: " + String($(val('status'))));
-            if (@val('status') == '201') {
-              console.log("TokenId = " + token.id)
-              alert("card successfully tokenised: " + result.id);
-            } else {
-              alert("Failed");
-            }
+            action_call('get_token', {token_id: token.id}, function(data){
+              alert("Test " + data.status);
+              if (data.status == 201) {
+                console.log("TokenId = " + token.id)
+                alert("card successfully tokenised: " + result.id);
+              } else {
+                alert("Failed");
+              }
+            });
           }
         }
       })
@@ -104,8 +104,8 @@ script: |
 
 under: |
   *Payments are made through a secure payment gateway directly to Campus Central Student Accommodation.*
-
 ---
+
 event: get_token
 code: |
   token_id = action_argument('token_id')
@@ -113,8 +113,11 @@ code: |
 
   data = yoco_charge(token_id, transaction.amount)
 
-  status = str(json.dumps(data.status_code))
-  log("test " + str(status))
+  status_data = data.status_code
+  log("test " + str(status_data))
+
+  json_response(dict(status=status_data))
+
 
 
 

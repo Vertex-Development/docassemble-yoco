@@ -15,7 +15,7 @@ metadata_obj = MetaData(schema="payment")
 # Create the base class for SQLAlchemy table definitions
 Base = declarative_base(metadata=metadata_obj) 
  
-class TransactionModel(Base): 
+class SuccessModel(Base): 
     __tablename__ = 'Transaction_tbl' 
     id = Column(Integer, primary_key=True)
     Token = Column(String(250))
