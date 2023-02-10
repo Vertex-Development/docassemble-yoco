@@ -18,9 +18,6 @@ def yoco_charge(token, amount):
                                     },
                                 )       
     data = response
-
-    if data == 201:
-
     return data
 
 
