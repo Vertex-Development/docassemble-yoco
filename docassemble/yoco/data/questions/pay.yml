@@ -55,6 +55,7 @@ subquetion: |
   Please enter payment amount.
 fields:
   - How much do you wish to pay?: x.amount
+    default: 12345
 ---
 
 event: final_payment
@@ -111,9 +112,9 @@ code: |
   token_id = action_argument('token_id') 
   log(token_id)
 
-  response = yoco_charge(token_id, transaction.amount)
+  response = yoco_charge("token_id", transaction.amount) 
 
-  log("New test" + response.json()['id'])
+  log("yeet" + str(response.json()))
 
   status_data = response.status_code
   log("test " + str(status_data))

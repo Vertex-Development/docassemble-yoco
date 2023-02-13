@@ -1,6 +1,6 @@
 import json
 import requests
-from docassemble.base.util import get_config, log, create_session
+from docassemble.base.util import get_config, log, user_info
 import psycopg2
 # Anonymous test key. Replace with your key.
 SECRET_KEY = 'sk_test_960bfde0VBrLlpK098e4ffeb53e1'
@@ -22,12 +22,18 @@ def write_response_to_db(response):
 
     j_response = response.json()
 
-    interview_filename = 'docassemble.playground1pay:pay.yml'
-    session_id = create_session(interview_filename)
+    session_id = user_info().session
 
     conn = get_conn()
     # Open a cursor to perform database operations
     cur = conn.cursor()
+
+    sql = 'SELECT count(*) from metadata;'
+    data = ['metadata']
+    cur.execute(sql,data)
+    result = cur.fetchone()
+    log("testing testing " + str(result[0]))
+
     # Pass data to fill a query placeholders and let Psycopg perform
     # the correct conversion (no more SQL injections!)
     log(response.ok)
@@ -60,10 +66,12 @@ def write_response_to_db(response):
         log("Unsuccessful response") 
 
         # Define the data to be inserted
-        error_data = (j_response['errorType'], j_response['errorCode'], j_response['errorMessage'], j_response['displayMessage'])
+        error_data = ('error - ' + str(result[0] + 1), j_response['errorType'], j_response['errorCode'], j_response['errorMessage'], j_response['displayMessage'], '9902265150084', session_id)
+
 
         # Execute the INSERT statement
-        cur.execute("INSERT INTO payment_errors (error_type, error_code, error_message, display_message) VALUES (%s, %s, %s, %s)", error_data)
+        cur.execute("INSERT INTO payment_errors (error_id, error_type, error_code, error_message, display_message, unique_number, session_id) VALUES (%s, %s, %s, %s, %s, %s, %s)", error_data)
+
 
     # Commit the transaction 
     conn.commit()
