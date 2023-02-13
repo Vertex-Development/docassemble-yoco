@@ -88,19 +88,18 @@ script: |
             document.getElementById('checkout-button').style.visibility = 'hidden'
             const token = result;
             action_call('get_token', {token_id: token.id}, function(data){
-              alert("Test " + data.status);
               if (data.status == 201) {
                 console.log("TokenId = " + token.id)
                 alert("card successfully tokenised: " + result.id);
               } else {
-                alert("Failed");
+                alert("Failed"); 
               }
             });  
-          }
+          } 
         }
       })
     });
-  </script>
+  </script> 
 
 under: |
   *Payments are made through a secure payment gateway directly to Campus Central Student Accommodation.*
@@ -108,12 +107,15 @@ under: |
 
 event: get_token
 code: |
-  token_id = action_argument('token_id')
+  
+  token_id = action_argument('token_id') 
   log(token_id)
 
-  data = yoco_charge(token_id, transaction.amount)
+  response = yoco_charge(token_id, transaction.amount)
 
-  status_data = data.status_code
+  log("New test" + response.json()['id'])
+
+  status_data = response.status_code
   log("test " + str(status_data))
 
   json_response(dict(status=status_data))
