@@ -22,7 +22,7 @@ def write_response_to_db(response):
 
     j_response = response.json()
 
-    interview_filename = 'https://dev.platofy.com/interview?i=docassemble.playground1pay:pay.yml'
+    interview_filename = 'docassemble.playground1pay:pay.yml'
     session_id = create_session(interview_filename)
 
     conn = get_conn()
